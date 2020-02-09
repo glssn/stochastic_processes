@@ -5,27 +5,32 @@ import altair as alt
 # pandas dataframe
 df = pd.DataFrame( columns=['number of turns', 'wealth'])
 # winning probability, p
-p = 0.51
+p = 0.6
 # losing probability, q
 q = 1-p
 # Starting cash
-i = 10
+i = 100
+prints = False
 # Print wealth
-print("Starting wealth = " + str(i))
+print("Starting wealth = £" + str(i))
 # desired wealth
 W = 1000
+print("Goal wealth = £" + str(W))
 
 play = True
 wealth = i
 turn = 0
+
 while (play == True):
     if wealth == W:
         play = False
-        print("Gambler wins!")
+        if prints == True:
+            print("Gambler wins!")
         break
     elif wealth == 0:
         play = False
-        print("Gambler is ruined!")
+        if prints == True:
+            print("Gambler is ruined!")
         break
     turn += 1
     win = np.random.random_sample() < p
@@ -33,6 +38,12 @@ while (play == True):
         wealth += 1
     else:
         wealth -= 1
-    print("Gambler now has " + str(wealth))
+    if prints == True:
+        print("Gambler now has " + str(wealth))
     df = df.append({'number of turns': turn, 'wealth': wealth}, ignore_index = True)
-print(df)
+
+alt.Chart(df).mark_line(interpolate='step-after').encode(
+    x='number of turns',
+    y='wealth',
+    tooltip='wealth'
+)
